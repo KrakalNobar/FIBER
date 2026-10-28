@@ -1,0 +1,46 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: Generate Buildozer Spec & Build APK
+      run: |
+        buildozer init
+        
+        # Pengaturan Nama Aplikasi dan Package
+        sed -i 's/^title = .*/title = FIBERHOME_ADDWAN by.shiegiet/' buildozer.spec
+        sed -i 's/^package.name = .*/package.name = fiberhome_addwan/' buildozer.spec
+        sed -i 's/^package.domain = .*/package.domain = com.shiegiet.fiberhome/' buildozer.spec
+        sed -i 's/^requirements = .*/requirements = python3,telnetlib3/' buildozer.spec
+        sed -i 's/^orientation = .*/orientation = portrait/' buildozer.spec
+        
+        # Jalankan kompilasi APK
+        buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: FIBERHOME_ADDWAN_by_shiegiet
+        path: bin/*.apk
