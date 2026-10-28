@@ -42,9 +42,6 @@ jobs:
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         sed -i 's/# android.archs =.*/android.archs = arm64-v8a/' buildozer.spec
         
-        # Bersihkan cache build sebelumnya jika ada
-        buildozer android clean
-        
         # Jalankan kompilasi APK
         buildozer -v android debug
 
