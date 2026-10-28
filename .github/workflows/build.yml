@@ -36,10 +36,14 @@ jobs:
         sed -i 's/^requirements = .*/requirements = python3,telnetlib3/' buildozer.spec
         sed -i 's/^orientation = .*/orientation = portrait/' buildozer.spec
         
-        # Atur versi Android SDK dan NDK yang stabil agar tidak error aidl
+        # Pengaturan SDK, NDK, dan Arsitektur agar kompatibel
         sed -i 's/# android.sdk =.*/android.sdk = 31/' buildozer.spec
         sed -i 's/# android.ndk =.*/android.ndk = 23b/' buildozer.spec
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+        sed -i 's/# android.archs =.*/android.archs = arm64-v8a/' buildozer.spec
+        
+        # Bersihkan cache build sebelumnya jika ada
+        buildozer android clean
         
         # Jalankan kompilasi APK
         buildozer -v android debug
